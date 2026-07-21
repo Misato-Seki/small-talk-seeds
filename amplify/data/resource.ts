@@ -12,6 +12,25 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
+  
+  Quiz: a
+    .model({
+      content: a.string().required(), 
+      description: a.string().required(),
+      choices: a.hasMany("Choice", "quizId")
+    })
+    // .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  Choice: a
+    .model({
+      quizId: a.id(),
+      quiz: a.belongsTo("Quiz", "quizId"),
+      content: a.string().required(),
+      answer: a.boolean().required(),
+    })
+    // .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.publicApiKey()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
