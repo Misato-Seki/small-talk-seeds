@@ -12,8 +12,11 @@ Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
 
-const selectionSet = ['id', 'content', 'description', 'choices.*'] as const;
-type QuizzesWithChoices = SelectionSet<Schema["Quiz"]["type"], typeof selectionSet>;
+const selectionSet = ["id", "content", "description", "choices.*"] as const;
+type QuizzesWithChoices = SelectionSet<
+  Schema["Quiz"]["type"],
+  typeof selectionSet
+>;
 
 export default function App() {
   // const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
@@ -29,15 +32,12 @@ export default function App() {
   //   });
   // }
 
-
   function listQuizzes() {
-    client.models.Quiz.observeQuery(
-      { selectionSet: ['id', 'content', 'description', 'choices.*']},
-    ).subscribe(
-      {
+    client.models.Quiz.observeQuery({
+      selectionSet: ["id", "content", "description", "choices.*"],
+    }).subscribe({
       next: (data) => setQuizzes([...data.items]),
-      }
-    );
+    });
   }
   console.log("quizzes", quizzes);
 
@@ -59,16 +59,28 @@ export default function App() {
       <ul>
         {quizzes.map((quiz) => (
           <li
-          // onClick={() => deleteTodo(todo.id)} 
-          key={quiz.id}>
-            <p><strong>質問:</strong> {quiz.content}</p>
-            {quiz.choices && quiz.choices.length > 0 && quiz.choices.map((choice) => (
-              <div key={choice.id}>
-                <p><strong>選択肢:</strong> {choice.content}</p>
-                <p><strong>解答:</strong> {choice.answer === true ? '⭕️' : '❌'}</p>
-              </div>
-            ))}
-            <p><strong>説明:</strong> {quiz.description}</p>
+            // onClick={() => deleteTodo(todo.id)}
+            key={quiz.id}
+          >
+            <p>
+              <strong>質問:</strong> {quiz.content}
+            </p>
+            {quiz.choices &&
+              quiz.choices.length > 0 &&
+              quiz.choices.map((choice) => (
+                <div key={choice.id}>
+                  <p>
+                    <strong>選択肢:</strong> {choice.content}
+                  </p>
+                  <p>
+                    <strong>解答:</strong>{" "}
+                    {choice.answer === true ? "⭕️" : "❌"}
+                  </p>
+                </div>
+              ))}
+            <p>
+              <strong>説明:</strong> {quiz.description}
+            </p>
           </li>
         ))}
       </ul>
