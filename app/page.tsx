@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { generateClient, SelectionSet } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
-import "./../app/app.css";
+// import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
+import MemberCard from "@/components/MemberCard";
 
 Amplify.configure(outputs);
 
@@ -54,9 +55,10 @@ export default function App() {
 
   return (
     <main>
-      <h1>My Quizzes</h1>
+      <MemberCard />
+      {/* <h1>My Quizzes</h1> */}
       {/* <button onClick={createTodo}>+ new</button> */}
-      <ul>
+      {/* <ul>
         {quizzes.map((quiz) => (
           <li
             // onClick={() => deleteTodo(todo.id)}
@@ -91,7 +93,7 @@ export default function App() {
         <a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/">
           Review next steps of this tutorial.
         </a>
-      </div>
+      </div> */}
     </main>
   );
 }
