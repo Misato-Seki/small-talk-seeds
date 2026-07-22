@@ -148,6 +148,7 @@ a {
   --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
   --sidebar-border: oklch(0.925 0.005 214.3);
   --sidebar-ring: oklch(0.723 0.014 214.4);
+  --welcome-duration: 6s;
 }
 
 .dark {
@@ -197,5 +198,70 @@ a {
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes frame-fade-in-out {
+  0% {
+    opacity: 0;
+    z-index: 1;
+  }
+  8% {
+    opacity: 1;
+    z-index: 1;
+  }
+  90% {
+    opacity: 1;
+    z-index: 1;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+@keyframes first-text-fade-in-out {
+  0% {
+    opacity: 0;
+    z-index: 1;
+  }
+  8% {
+    opacity: 1;
+    z-index: 1;
+  }
+  45% {
+    opacity: 1;
+    z-index: 1;
+  }
+  55% {
+    opacity: 0;
+    z-index: 1;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+@keyframes second-text-fade-in-out {
+  0% {
+    opacity: 0;
+    z-index: 1;
+  }
+  45% {
+    opacity: 0;
+    z-index: 1;
+  }
+  55% {
+    opacity: 1;
+    z-index: 1;
+  }
+  90% {
+    opacity: 1;
+    z-index: 1;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
   }
 }

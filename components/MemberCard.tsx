@@ -13,7 +13,7 @@ export default function MemberCard() {
         height={500}
         alt="Event cover"
         // className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-        className="relative z-20 aspect-video w-full object-cover"
+        className="relative aspect-video w-full object-cover"
       />
       <CardHeader>
         <CardTitle>

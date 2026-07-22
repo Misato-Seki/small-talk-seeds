@@ -8,6 +8,7 @@ import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import MemberCard from "@/components/MemberCard";
+import WelcomeMessage from "@/components/WelcomeMessage";
 
 Amplify.configure(outputs);
 
@@ -54,7 +55,8 @@ export default function App() {
   // }
 
   return (
-    <main>
+    <div>
+      <WelcomeMessage />
       <MemberCard />
       {/* <h1>My Quizzes</h1> */}
       {/* <button onClick={createTodo}>+ new</button> */}
@@ -94,6 +96,6 @@ export default function App() {
           Review next steps of this tutorial.
         </a>
       </div> */}
-    </main>
+    </div>
   );
 }
