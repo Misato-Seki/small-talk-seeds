@@ -63,7 +63,8 @@ export default function App() {
             key={quiz.id}
           >
             <p>
-              <strong>質問:</strong> {quiz.content}
+              <strong className="text-4xl font-bold">質問:</strong>{" "}
+              {quiz.content}
             </p>
             {quiz.choices &&
               quiz.choices.length > 0 &&
