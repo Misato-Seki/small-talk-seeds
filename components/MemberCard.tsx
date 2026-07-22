@@ -17,7 +17,7 @@ export default function MemberCard() {
       />
       <CardHeader>
         <CardTitle>
-          <span className="text-lg font-bold">関 美里</span>
+          <span className="text-2xl font-bold">関 美里</span>
           <span>さんのタネ🌱</span>
         </CardTitle>
       </CardHeader>
