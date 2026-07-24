@@ -24,6 +24,8 @@ export default function QuizPage() {
     quizzes.length > 0 ? quizzes[0] : null,
   );
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [isReviewMode, setIsReviewMode] = useState<boolean>(false);
+  const [selectedChoiceIDs, setSelectedChoiceIDs] = useState<Array<string>>([]);
 
   function insertQuizzes(quizzes: Array<QuizWithChoices>) {
     if (quizzes.length > 0) {
@@ -60,6 +62,42 @@ export default function QuizPage() {
     }
   }
 
+  function toggleMode() {
+    setIsReviewMode(!isReviewMode);
+  }
+
+  function storeSelectedChoiceIDs(choiceId: string) {
+    if (isReviewMode) {
+      return;
+    }
+
+    const hasChoiceId = selectedChoiceIDs.includes(choiceId);
+
+    if (hasChoiceId) {
+      const newIds: Array<string> = selectedChoiceIDs.filter(
+        (id) => id !== choiceId,
+      );
+      setSelectedChoiceIDs(newIds);
+    } else {
+      setSelectedChoiceIDs([...selectedChoiceIDs, choiceId]);
+    }
+  }
+
+  function getChoiceColorClass(choiceId: string, choiceAnswer: boolean) {
+    if (!isReviewMode) return;
+    if (choiceAnswer === false && !selectedChoiceIDs.includes(choiceId)) {
+      return "text-gray-400 border-gray-400";
+    } else if (choiceAnswer === false && selectedChoiceIDs.includes(choiceId)) {
+      return "border-red-400 bg-red-400/25";
+    } else {
+      return "border-green-400 bg-green-400/25";
+    }
+  }
+
+  // 後で消す
+  console.log("selectedChoiceIDs: ", selectedChoiceIDs);
+  console.log("isReviewMode: ", isReviewMode);
+
   return (
     <>
       {isFinished ? (
@@ -70,32 +108,46 @@ export default function QuizPage() {
       ) : (
         <div>
           {displayedQuiz && (
-            <div>
-              <p>
-                <strong>質問:</strong> {displayedQuiz.content}
-              </p>
+            <div className="">
+              <div className="flex flex-col space-y-3 mb-3">
+                <strong>問題</strong>
+                <p className="mb-3">{displayedQuiz.content}</p>
+              </div>
               {displayedQuiz.choices &&
                 displayedQuiz.choices.length > 0 &&
                 displayedQuiz.choices.map((choice) => (
-                  <div key={choice.id}>
-                    <p>
-                      <strong>選択肢:</strong> {choice.content}
-                    </p>
-                    <p>
-                      <strong>解答:</strong>{" "}
-                      {choice.answer === true ? "⭕️" : "❌"}
-                    </p>
+                  <div
+                    key={choice.id}
+                    className={`border rounded-xl p-4 mb-4 ${!isReviewMode ? "hover:bg-gray-100 active:translate-y-px cursor-pointer" : ""} ${selectedChoiceIDs.includes(choice.id) ? "bg-gray-100 outline-2 outline-offset-2 outline-primary " : ""} ${isReviewMode ? getChoiceColorClass(choice.id, choice.answer) : ""}`}
+                    onClick={() => {
+                      storeSelectedChoiceIDs(choice.id);
+                    }}
+                  >
+                    <p>{choice.content}</p>
                   </div>
                 ))}
-              <p>
-                <strong>説明:</strong> {displayedQuiz.description}
-              </p>
+              {!isReviewMode && (
+                <Button onClick={toggleMode} className="">
+                  答えを見る👀
+                </Button>
+              )}
+              {isReviewMode && (
+                <div className="flex flex-col space-y-3 mb-4 border p-4 rounded-xl">
+                  <strong>説明</strong>
+                  <p>{displayedQuiz.description}</p>
+                </div>
+              )}
             </div>
           )}
-          {quizzes.length === 0 ? (
-            <p>クイズがありません。</p>
-          ) : (
-            <Button onClick={incrementDisplayedQuiz}>次の問題</Button>
+          {isReviewMode && (
+            <Button
+              onClick={() => {
+                incrementDisplayedQuiz();
+                toggleMode();
+              }}
+            >
+              次の問題👉
+            </Button>
           )}
         </div>
       )}
