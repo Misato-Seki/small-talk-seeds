@@ -3,11 +3,11 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
-body .children {
+/* body .children {
   padding: 20px 20px 60px;
   max-width: 680px;
   margin: 0 auto;
-}
+} */
 /* :root {
   --max-width: 1100px;
   --border-radius: 12px;
