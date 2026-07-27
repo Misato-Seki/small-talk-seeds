@@ -7,6 +7,9 @@ import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 import { Button } from "@/components/ui/button";
+import { Card, CardFooter } from "@/components/ui/card";
+import { Check } from "lucide-react";
+import Link from "next/link";
 
 Amplify.configure(outputs);
 
@@ -26,6 +29,7 @@ export default function QuizPage() {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [isReviewMode, setIsReviewMode] = useState<boolean>(false);
   const [selectedChoiceIDs, setSelectedChoiceIDs] = useState<Array<string>>([]);
+  const [score, setScore] = useState<number>(0);
 
   function insertQuizzes(quizzes: Array<QuizWithChoices>) {
     if (quizzes.length > 0) {
@@ -49,14 +53,22 @@ export default function QuizPage() {
     listQuizzes();
   }, []);
 
+  // 次の問題に進む
   function incrementDisplayedQuiz() {
+    // 今の問題のindex
     const currentIndex = quizzes.findIndex(
       (quiz) => quiz.id === displayedQuiz?.id,
     );
+    // 最後の問題なら、結果画面に移行する
     if (currentIndex === quizzes.length - 1) {
+      checkAnswer();
+      setSelectedChoiceIDs([]);
       setIsFinished(true);
       return;
     } else {
+      // それ以外
+      checkAnswer();
+      setSelectedChoiceIDs([]);
       const nextIndex = currentIndex + 1;
       setDisplayedQuiz(quizzes[nextIndex]);
     }
@@ -94,16 +106,47 @@ export default function QuizPage() {
     }
   }
 
+  function checkAnswer() {
+    // 正解の選択肢IDを持つSetを作る
+    const answerSet = new Set<string>();
+    displayedQuiz?.choices.forEach((choice) => {
+      if (choice.answer === true) answerSet.add(choice.id);
+    });
+    // ユーザーが選んだ選択肢IDを持つSetを作る
+    const userChoicesSet = new Set(selectedChoiceIDs);
+    // 中身を比較し、スコアを更新
+    if (
+      answerSet.size === userChoicesSet.size &&
+      Array.from(answerSet).every((currentValue) =>
+        userChoicesSet.has(currentValue),
+      )
+    ) {
+      setScore((prev) => prev + 1);
+    }
+  }
+
   // 後で消す
   console.log("selectedChoiceIDs: ", selectedChoiceIDs);
   console.log("isReviewMode: ", isReviewMode);
+  console.log("Score: ", score);
 
   return (
     <>
       {isFinished ? (
-        <div>
-          <h2>クイズ終了!</h2>
-          <p>お疲れ様でした!</p>
+        <div className="flex justify-center">
+          <Card className="items-center p-6">
+            <Check color="#00786f" size={48} strokeWidth={3} />
+            <h2 className="text-xl font-bold">クイズ終了!</h2>
+            <p className="text-lg">
+              {quizzes.length}問中<strong> {score} </strong>問正解しました✨
+            </p>
+            <p className="text-lg">関さんに話しかけてみましょう〜🌸</p>
+            <CardFooter>
+              <Link href="/" className="w-full">
+                <Button>ホームへ戻る🏠</Button>
+              </Link>
+            </CardFooter>
+          </Card>
         </div>
       ) : (
         <div>
