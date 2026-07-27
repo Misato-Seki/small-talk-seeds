@@ -53,16 +53,22 @@ export default function QuizPage() {
     listQuizzes();
   }, []);
 
+  // 次の問題に進む
   function incrementDisplayedQuiz() {
+    // 今の問題のindex
     const currentIndex = quizzes.findIndex(
       (quiz) => quiz.id === displayedQuiz?.id,
     );
+    // 最後の問題なら、結果画面に移行する
     if (currentIndex === quizzes.length - 1) {
       checkAnswer();
+      setSelectedChoiceIDs([]);
       setIsFinished(true);
       return;
     } else {
+      // それ以外
       checkAnswer();
+      setSelectedChoiceIDs([]);
       const nextIndex = currentIndex + 1;
       setDisplayedQuiz(quizzes[nextIndex]);
     }
