@@ -39,7 +39,7 @@ export default function MemberCard({
           <CardHeader>
             <CardTitle>
               <span className="text-2xl font-bold">{member.name}</span>
-              <span>さんのタネ🌱</span>
+              <span>さん</span>
             </CardTitle>
           </CardHeader>
           <CardFooter>
