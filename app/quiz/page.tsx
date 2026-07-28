@@ -125,11 +125,6 @@ export default function QuizPage() {
     }
   }
 
-  // 後で消す
-  console.log("selectedChoiceIDs: ", selectedChoiceIDs);
-  console.log("isReviewMode: ", isReviewMode);
-  console.log("Score: ", score);
-
   return (
     <>
       {isFinished ? (

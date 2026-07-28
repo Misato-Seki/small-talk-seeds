@@ -148,7 +148,7 @@ a {
   --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
   --sidebar-border: oklch(0.925 0.005 214.3);
   --sidebar-ring: oklch(0.723 0.014 214.4);
-  --welcome-duration: 6s;
+  --welcome-duration: 5s;
 }
 
 .dark {
