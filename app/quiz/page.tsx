@@ -10,12 +10,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { getUrl } from "aws-amplify/storage";
 
 Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
 
-const selectionSet = ["id", "content", "description", "choices.*"] as const;
+const selectionSet = [
+  "id",
+  "content",
+  "description",
+  "choices.*",
+  "image_key",
+] as const;
 type QuizWithChoices = SelectionSet<
   Schema["Quiz"]["type"],
   typeof selectionSet
@@ -30,6 +38,7 @@ export default function QuizPage() {
   const [isReviewMode, setIsReviewMode] = useState<boolean>(false);
   const [selectedChoiceIDs, setSelectedChoiceIDs] = useState<Array<string>>([]);
   const [score, setScore] = useState<number>(0);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   function insertQuizzes(quizzes: Array<QuizWithChoices>) {
     if (quizzes.length > 0) {
@@ -43,15 +52,11 @@ export default function QuizPage() {
 
   function listQuizzes() {
     client.models.Quiz.observeQuery({
-      selectionSet: ["id", "content", "description", "choices.*"],
+      selectionSet: ["id", "content", "description", "choices.*", "image_key"],
     }).subscribe({
       next: (data) => insertQuizzes([...data.items]),
     });
   }
-
-  useEffect(() => {
-    listQuizzes();
-  }, []);
 
   // 次の問題に進む
   function incrementDisplayedQuiz() {
@@ -125,6 +130,32 @@ export default function QuizPage() {
     }
   }
 
+  async function getImageUrl(image_key: string) {
+    if (!image_key) return "";
+
+    try {
+      const linkToStorageFile = await getUrl({
+        path: image_key,
+        options: {
+          validateObjectExistence: false,
+          expiresIn: 3600, // １時間有効
+        },
+      });
+      setImageUrl(linkToStorageFile.url.toString());
+    } catch (error) {
+      console.log("Failed to get image URL: ", error);
+    }
+  }
+
+  useEffect(() => {
+    setImageUrl("");
+    if (displayedQuiz?.image_key) getImageUrl(displayedQuiz.image_key);
+  }, [displayedQuiz?.image_key]);
+
+  useEffect(() => {
+    listQuizzes();
+  }, []);
+
   return (
     <>
       {isFinished ? (
@@ -150,6 +181,14 @@ export default function QuizPage() {
               <div className="flex flex-col space-y-3 mb-3">
                 <strong>問題</strong>
                 <p className="mb-3">{displayedQuiz.content}</p>
+                {imageUrl && (
+                  <Image
+                    src={imageUrl}
+                    alt="問題画像"
+                    height={500}
+                    width={500}
+                  />
+                )}
               </div>
               {displayedQuiz.choices &&
                 displayedQuiz.choices.length > 0 &&

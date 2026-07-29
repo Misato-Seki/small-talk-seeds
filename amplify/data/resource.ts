@@ -12,12 +12,13 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
-  
+
   Quiz: a
     .model({
-      content: a.string().required(), 
+      content: a.string().required(),
       description: a.string().required(),
-      choices: a.hasMany("Choice", "quizId")
+      image_key: a.string(),
+      choices: a.hasMany("Choice", "quizId"),
     })
     // .authorization((allow) => [allow.owner()]),
     .authorization((allow) => [allow.publicApiKey()]),
